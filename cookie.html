@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>gLinks Cookie Manager</title>
+    <style>
+        body {
+            background-color: #c0c0c0; /* 클래식 윈도우 회색 */
+            font-family: 'Tahoma', 'Arial', sans-serif;
+            font-size: 12px;
+            padding: 20px;
+        }
+        h2 {
+            color: #000080;
+            border-bottom: 2px solid #808080;
+            padding-bottom: 5px;
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: white;
+            box-shadow: inset 2px 2px #808080, inset -2px -2px #ffffff;
+        }
+        th {
+            background-color: #d4d0c8;
+            border: 1px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            padding: 6px;
+            text-shadow: 1px 1px white;
+        }
+        td {
+            padding: 6px;
+            border: 1px solid #eeeeee;
+        }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        
+        /* 클래식 버튼 스타일 */
+        button {
+            padding: 4px 12px;
+            background-color: #d4d0c8;
+            border: 2px outset #ffffff;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 1px 1px 0px black;
+        }
+        button:active {
+            border: 2px inset #ffffff;
+            box-shadow: none;
+        }
+        button.delete-btn {
+            color: #a00000;
+        }
+         button.nuclear-btn {
+            color: #c4b702;
+        }
+        .vault-container {
+            border: 2px inset #ffffff;
+            padding: 10px;
+            background: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <h2>🍪 gLinksWWW Cookie Manager</h2>
+    <div class="vault-container">
+        <button class="nuclear-btn" onclick="nuclearClear()">NUCLEAR BUTTON</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Domain</th>
+                    <th>Cookies Count</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="cookieTableBody">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        async function loadCookies() {
+    // 구조 분해 할당으로 두 데이터를 한 번에 받음
+    const { cookies, currentHost } = await ipcRenderer.invoke('get-cookies');
+    
+    const tableBody = document.getElementById('cookieTableBody');
+    tableBody.innerHTML = ''; 
+
+    // 현재 사이트의 메인 도메인 추출 (예: www.google.com -> google.com)
+    const getBaseDomain = (host) => {
+        if (!host || host === 'about:blank') return "";
+        const parts = host.split('.');
+        return parts.length > 2 ? parts.slice(-2).join('.') : host;
+    };
+    const currentBase = getBaseDomain(currentHost);
+
+    const domainCount = {};
+    cookies.forEach(c => {
+        domainCount[c.domain] = (domainCount[c.domain] || 0) + 1;
+    });
+
+    for (const domain in domainCount) {
+        const row = document.createElement('tr');
+        const cleanDomain = domain.startsWith('.') ? domain.substring(1) : domain;
+        const cookieBase = getBaseDomain(cleanDomain);
+
+        // 아군(현재 사이트)인지 적군(트래커/옛날 쿠키)인지 판별
+        const isTarget = (currentBase !== "" && currentBase === cookieBase);
+
+        row.innerHTML = `
+            <td>
+               
+                <strong>${domain}</strong>
+            </td>
+            <td style="color: blue;">${domainCount[domain]} items</td>
+            <td>
+                <button class="delete-btn" onclick="deleteCookies('${domain}')">DESTROY</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    }
+}
+async function deleteCookies(domain) {
+     await ipcRenderer.invoke('delete-cookies', domain);
+                loadCookies();
+           
+        }
+        async function nuclearClear() {
+            if(confirm("Are you sure you want to delete ALL cookies? This action cannot be undone.")) {
+                await ipcRenderer.invoke('clear-all-cookies');
+                loadCookies();
+            } 
+        }
+
+        window.onload = loadCookies;
+    </script>
+</body>
+</html>
