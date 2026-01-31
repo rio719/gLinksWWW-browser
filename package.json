@@ -1,0 +1,58 @@
+{
+  "name": "glinkswww-browser",
+  "version": "1.0.0",
+  "description": "Lightweight Electron browser optimized for 1-core CPUs and low-resource environments.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "dist:win32": "electron-builder --windows --ia32",
+    "dist:win64": "electron-builder --windows --x64",
+    "dist:linux": "electron-builder --linux --x64 --arm64",
+    "dist:all": "electron-builder --win --linux"
+  },
+  "author": "rio719",
+  "license": "GNU GPL-3.0",
+  "devDependencies": {
+    "electron": "^40.0.0",
+    "electron-builder": "^26.4.0"
+  },
+  "build": {
+    "appId": "com.rio.glinkswww",
+    "productName": "gLinksWWW",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64", "ia32"]
+        },
+        {
+          "target": "nsis",
+          "arch": ["x64", "ia32"]
+        }
+      ],
+      "icon": "icon.ico"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["amd64", "arm64"]
+        },
+        {
+          "target": "tar.gz",
+          "arch": ["x64"]
+        }
+      ],
+      "category": "Network",
+      "icon": "icon.png"
+    }
+  }
+}
