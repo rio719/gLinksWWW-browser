@@ -1,0 +1,312 @@
+
+<!DOCTYPE html> 
+<html>
+<head>
+  <style>
+    /* index.html */
+    body { margin: 0; background: #ffffff; font-family: 'Times New Roman', serif; }
+    .toolbar1 { 
+      height: 30px; display: flex; align-items: center; padding: 0 10px; gap: 10px; background: #b89f79;
+      border-top: 2px solid #ffffff; border-left: 2px solid #fff;
+      border-right: 2px solid #292929; border-bottom: 2px solid  #292929;
+    }
+    .toolbar { 
+      height: 40px; display: flex; align-items: center; padding: 0 10px; gap: 10px; background: #b89f79;
+      border-top: 2px solid #ffffff; border-left: 2px solid #fff;
+      border-right: 2px solid #292929; border-bottom: 2px solid  #292929;
+    }
+    input { 
+      outline: none; /* 주황색 테두리 제거 */
+      flex: 1; padding: 5px; background: white;
+      border-right: 2px solid #292929; border-bottom: 2px solid  #292929;
+      border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    }
+    button { 
+      padding: 5px 15px; background: #b89f79; font-weight: bold;
+      border-top: 2px solid #fff; border-left: 2px solid #fff;
+      border-right: 2px solid #292929; border-bottom: 2px solid  #292929;
+      cursor: pointer;
+    }
+    button:active {
+      border-right: 2px solid #292929; border-bottom: 2px solid  #292929;
+      border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    }
+    b,span {color:#ffffff}
+    .tab-btn {
+    background: #b89f79; border: 2px outset #fff; color: white; 
+    margin-left: 5px; cursor: pointer; font-size: 10px;
+  }
+  /* 예전 지링스 입체 버튼 스타일 */
+    .tab {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 12px;
+        background: #b89f79; /* 기본 갈색 */
+        border: 2px outset #eee; /* 입체 효과 */
+        cursor: pointer;
+        margin-right: 2px;
+        font-family: 'Times New Roman', serif;
+        font-size: 13px;
+    }
+
+    /* 마우스를 올렸을 때 */
+    .tab:hover { background: #a68d66; }
+
+    /* 선택된 탭 (더 어두운 갈색 + 눌린 효과) */
+    .tab.active {
+        background: #8e7956; 
+      
+        color: white;
+    }
+
+    .tab img { margin-right: 6px; border: 1px solid #777; background: white; }
+    .close-btn { margin-left: 8px; color: #600; font-weight: bold; }
+    
+    #plus-btn {
+        padding: 2px 8px;
+        background: #b89f79;
+        border: 2px outset #eee;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    /* home.html 또는 style.css */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* 전체 페이지 스크롤은 막고 */
+}
+
+/* 텔레그램이나 웹사이트가 들어가는 컨테이너 */
+#content-area {
+    width: 100%;
+    height: calc(100vh - 50px); /* 탭 바 높이가 50px이라면 그만큼 빼고 나머지 꽉 채우기 */
+    display: block;
+}
+
+webview, iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+/* 우클릭 메뉴 전체 컨테이너 */
+.retro-menu {
+    background-color: #D2B48C; /* 연한 갈색 (Tan) */
+    border-top: 2px solid white;
+    border-left: 2px solid white;
+    border-bottom: 2px solid black;
+    border-right: 2px solid black;
+    padding: 4px;
+    width: 180px;
+    font-family: 'Arial', sans-serif;
+    font-size: 13px;
+}
+
+/* 메뉴 아이템 하나하나 */
+.menu-item-slot,.menu-item {
+    background-color: #D2B48C; /* 기본 연한 갈색 */
+    border-top: 2px solid white;
+    border-left: 2px solid white;
+    border-bottom: 2px solid black;
+    border-right: 2px solid black;
+    padding: 8px 12px;
+    margin: 2px;
+    cursor: pointer;
+    color: black;
+    font-weight: bold;
+}
+
+/* 리오님이 원하신 Hover 효과 */
+.menu-item-slot,.menu-item:hover {
+    background-color: #8B4513; /* 진한 갈색 (SaddleBrown) */
+    color: white; /* 어두운 배경에선 글자를 밝게 */
+}
+
+/* 버튼을 눌렀을 때 쏙 들어가는 느낌을 주려면? (추가 팁) */
+.menu-item-slot,.menu-item:active {
+    border-top: 2px solid black;
+    border-left: 2px solid black;
+    border-bottom: 2px solid white;
+    border-right: 2px solid white;
+}
+/* 슬롯들을 가로로 예쁘게 배치 */
+.slot-grid {
+    display: flex;
+    gap: 3px;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+  </style>
+</head>
+<body>
+  <div class="toolbar1">
+<b>gL-1.2.5</b><span id="pageTitle"></span></span>
+  <div id="tab-bar" style=" padding: 4px; display: flex; align-items: center;">
+    <div id="tabs-container" style="display: flex; overflow-x: auto;">
+        </div>
+    <button id="plus-btn" onclick="addNewTab()"><b>+</b></button>
+</div>
+  </div>
+  <div class="toolbar">
+    <button id="backBtn">◀</button>
+  <button id="forwardBtn">▶</button>
+  <button id="reloadBtn">🔄</button>
+    <input type="text" id="urlInput" placeholder="write a URL here (example: https://google.com)" />
+    <button id="goBtn">Go!</button>
+    <button id="homeBtn" >Home</button>
+    <button id="CookieBtn" >🍪</button>
+    
+  </div>
+  
+ 
+  <script>
+    const { ipcRenderer } = require('electron');
+    // 각 버튼 클릭 시 메인 프로세스에 명령 전달
+  document.getElementById('backBtn').onclick = () => ipcRenderer.send('go-back');
+  document.getElementById('forwardBtn').onclick = () => ipcRenderer.send('go-forward');
+  document.getElementById('reloadBtn').onclick = () => ipcRenderer.send('reload');
+    document.getElementById('goBtn').onclick = () => {
+      ipcRenderer.send('load-url', document.getElementById('urlInput').value);
+    };
+    // Home 버튼 클릭 시 (추가)
+  document.getElementById('homeBtn').onclick = () => {
+    ipcRenderer.send('go-home'); // 메인 프로세스에 'go-home' 신호를 보냄
+  };
+  // Cookie 버튼 클릭 시 (추가)
+  document.getElementById('CookieBtn').onclick = () => {  
+    ipcRenderer.send('open-cookie-manager'); // 메인 프로세스에 'open-cookie-manager' 신호를 보냄
+  };
+
+   
+  // 메인 프로세스에서 보내는 'update-url' 신호를 대기
+ipcRenderer.on('update-url', (event, url) => {
+  const urlInput = document.getElementById('urlInput');
+  urlInput.value = url; // 주소창 텍스트를 현재 URL로 변경
+});
+
+
+  // [Go!] 버튼 클릭 시
+  document.getElementById('goBtn').onclick = () => {
+    const url = document.getElementById('urlInput').value;
+    
+   
+    
+    ipcRenderer.send('load-url', url);
+  };
+
+ 
+function changeTab(index) {
+    // 1. 모든 버튼에서 active 클래스 제거
+    const tabs = document.querySelectorAll('.tab-btn');
+    tabs.forEach(tab => tab.classList.remove('active'));
+
+    // 2. 현재 누른 버튼에만 active 클래스 추가
+    document.getElementById('tab' + index).classList.add('active');
+
+    // 3. 메인 프로세스에 탭 전환 신호 전송
+    ipcRenderer.send('switch-tab', index);
+  }
+
+  // 페이지 제목 업데이트 받기
+  ipcRenderer.on('update-title', (event, title) => {
+    document.getElementById('pageTitle').innerText = title;
+  });
+ // --- index.html 내 script 부분 ---
+
+// 탭 추가 버튼 클릭 시
+function addNewTab() {
+  // [.tab-item]에서 [.tab]으로 수정!
+  const currentTabs = document.querySelectorAll('.tab').length; 
+
+  if (currentTabs >= 7) {
+    alert('max 7 Tab Allowed');
+    
+      return; 
+  }
+  ipcRenderer.send('request-new-tab');
+}
+
+// 로딩 시작 신호를 받으면 표시
+ipcRenderer.on('tab-loading-start', () => {
+    document.getElementById('loading-text').style.opacity = "1";
+});
+
+// 로딩 완료 신호를 받으면 숨김
+ipcRenderer.on('tab-loading-stop', () => {
+    document.getElementById('loading-text').style.opacity = "0";
+});
+
+// 탭 전환 시에도 로딩 상태 확인
+// index.html의 <script> 태그 안의 내용을 이걸로 바꾸세요.
+ipcRenderer.on('render-tabs', (event, { tabList, activeIndex }) => {
+    const container = document.getElementById('tabs-container');
+    container.innerHTML = ''; // 기존 탭을 싹 비우고 새로 그림
+
+    tabList.forEach((tab, i) => {
+        const tabEl = document.createElement('div');
+        // 활성화된 탭은 active 클래스를 붙여서 어둡게 표시
+        tabEl.className = `tab ${i === activeIndex ? 'active' : ''}`;
+        
+        // 탭 클릭 시 해당 번호로 전환
+        tabEl.onclick = () => ipcRenderer.send('switch-tab', i);
+        
+        // 제목이 너무 길면 자르기
+        const displayTitle = tab.title.length > 12 ? tab.title.substring(0, 10) + '..' : tab.title;
+            tabEl.innerHTML = `
+                <img src="${tab.icon}" width="16" height="16" onerror="this.src='default-icon.png'">
+                <span>${displayTitle}</span>
+                <span class="close-btn" onclick="deleteTab(${i}, event)">×</span>
+            `;
+            // [중요] x 버튼에 삭제 이벤트 연결
+        const closeBtn = tabEl.querySelector('.close-btn');
+        closeBtn.onclick = (e) => {
+            e.stopPropagation(); // 탭이 바뀌지 않게 클릭 이벤트 전파 막기
+            ipcRenderer.send('delete-tab', i);
+        };
+
+        container.appendChild(tabEl);
+        });
+    });
+    // loadRecommendations 아래나 페이지 전환 함수에 추가
+function fixTelegramLayout() {
+    const webview = document.querySelector('webview');
+    if (webview) {
+        // 웹뷰 내부의 스타일을 강제로 수정
+        webview.insertCSS(`
+            .typed-message { bottom: 0 !important; } 
+            .messages-layout { height: 100vh !important; }
+        `);
+    }
+}
+window.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    const menu = document.getElementById('custom-context-menu');
+    
+    // 이미지 위에서 우클릭했는지 확인
+    const downloadImgItem = document.getElementById('menu-download-img');
+    if (e.target.tagName === 'IMG') {
+        downloadImgItem.style.display = 'block';
+        window.currentImgUrl = e.target.src; // URL 저장
+    } else {
+        downloadImgItem.style.display = 'none';
+    }
+
+    menu.style.display = 'block';
+    menu.style.left = `${e.pageX}px`;
+    menu.style.top = `${e.pageY}px`;
+});
+// 메뉴의 'Download Image' 버튼 클릭 시 실행
+function downloadImage() {
+    if (currentRightClickedImg) {
+        ipcRenderer.send('download-this-image', currentRightClickedImg);
+    }
+}
+// 메뉴 밖 클릭 시 닫기
+window.addEventListener('click', () => {
+    document.getElementById('custom-context-menu').style.display = 'none';
+});
+</script>
+  </script>
+</body>
+</html>

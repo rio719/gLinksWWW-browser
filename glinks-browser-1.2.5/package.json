@@ -1,0 +1,62 @@
+{
+  "name": "gLinksWWW",
+  "version": "1.2.5",
+  "description": "18 Clipboards Privacy Browser",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "author": "Rio Burhan",
+  "license": "No commercial use, distribution, or modification allowed without permission.",
+  "devDependencies": {
+    "electron": "40.0.0",
+    "electron-builder": "26.4.0"
+  },
+  "build": {
+    "appId": "com.rio.glinkswww",
+    "productName": "gLinksWWW",
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"] 
+        }
+      ],
+      "hardenedRuntime": true,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64", "ia32"]
+        },
+        {
+          "target": "nsis",
+          "arch": ["x64", "ia32"]
+        }
+      ],
+      "icon": "icon.ico"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["amd64", "arm64"]
+        },
+        {
+          "target": "tar.gz",
+          "arch": ["x64"]
+        }
+      ],
+      "category": "Network",
+      "icon": "icon.png"
+    }
+  }
+}
