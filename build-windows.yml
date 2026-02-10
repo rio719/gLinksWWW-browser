@@ -1,0 +1,46 @@
+# Build Configuration for Linux
+
+# This YAML file configures the build process for Linux-based distributions, generating .deb and .appimage packages.
+
+name: Build for Linux
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      steps:
+        - name: Checkout Code
+          uses: actions/checkout@v2
+
+        - name: Setup Node.js
+          uses: actions/setup-node@v2
+          with:
+            node-version: '14'
+
+        - name: Install Dependencies
+          run: npm install
+
+        - name: Build .deb Package
+          run: | 
+              cd ./glinks-browser-1.2.5
+              # Commands to create .deb package
+              dpkg-deb --build . glinks-browser.deb
+
+        - name: Build .AppImage Package
+          run: |
+              cd ./glinks-browser-1.2.5
+              # Commands to create .AppImage package
+              ./build.sh  # assuming build.sh creates the appimage
+
+        - name: Upload Packages
+          uses: actions/upload-artifact@v2
+          with:
+            name: glinks-browser-packages
+            path: |
+              ./glinks-browser-1.2.5/glinks-browser.deb
+              ./glinks-browser-1.2.5/*.AppImage
