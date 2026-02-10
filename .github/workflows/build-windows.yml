@@ -1,8 +1,8 @@
-# Build for Linux
+# This is a sample GitHub Action for building on Windows
+# The working directory is set to ./glinks-browser-1.2.5 for all npm commands
+# The build artifacts path is updated to glinks-browser-1.2.5/dist/* for Linux build
 
-# This workflow will build the Electron app for Linux.
-
-name: Electron Build - Linux
+name: Build Windows
 
 on:
   push:
@@ -11,31 +11,30 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout Code
       uses: actions/checkout@v2
 
-    - name: Set up Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
         node-version: '14'
 
     - name: Install Dependencies
       run: |
+        cd ./glinks-browser-1.2.5
         npm install
 
-    - name: Build Application
+    - name: Run Build
       run: |
+        cd ./glinks-browser-1.2.5
         npm run build
-
-    - name: Package Application
-      run: |
-        npm run package
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: linux-electron-build
-        path: ./dist/*
+        name: build-artifacts
+        path: glinks-browser-1.2.5/dist/*
+    
