@@ -1,0 +1,30 @@
+  build-linux:
+    runs-on: ubuntu-latest # 리눅스 빌드는 우분투 서버에서!
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18' 
+
+    - name: Install Dependencies
+      run: |
+        cd ./glinks-browser-1.2.5
+        npm install
+
+    - name: Run Linux Build
+      run: |
+        cd ./glinks-browser-1.2.5
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload Linux Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux-artifacts
+        path: |
+          glinks-browser-1.2.5/dist/*.deb
+          glinks-browser-1.2.5/dist/*.AppImage
