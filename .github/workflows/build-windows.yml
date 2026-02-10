@@ -1,43 +1,41 @@
-name: GlinksWWW Windows Build
+# Build for Linux
+
+# This workflow will build the Electron app for Linux.
+
+name: Electron Build - Linux
 
 on:
   push:
-    branches: [ "main" ] # 메인 브랜치에 푸시될 때 실행
-  workflow_dispatch: # 직접 수동으로 'Run' 버튼 눌러서 실행 가능하게 함
+    branches:
+      - main
 
 jobs:
   build:
-    runs-on: windows-latest # 윈도우 서버를 빌려옵니다
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout Code
+      uses: actions/checkout@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18' # 리오님 환경에 맞는 노드 버전
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
 
-      - name: Install dependencies
-        working-directory: ./glinks-browser-1.2.5 # 👈 리오님이 만든 그 폴더로 이동!
-        run: npm install
+    - name: Install Dependencies
+      run: |
+        npm install
 
-      - name: Build Electron App
-        working-directory: ./glinks-browser-1.2.5
-        run: npm run build # package.json에 명시된 빌드 스크립트 실행
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build Application
+      run: |
+        npm run build
 
-      - name: Upload .exe file
-        uses: actions/upload-artifact@v4
-        with:
-          name: GlinksWWW-Win-Exe
-          path: glinks-browser-1.2.5/dist/*.exe # 빌드 결과물이 나오는 경로 (dist 폴더 확인!)
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: GlinksWWW-Windows-Exe  # 👈 다운로드할 때 표시될 이름
-          path: |
-            glinks-browser-1.2.5/dist/*.exe
-            glinks-browser-1.2.5/dist/*.blockmap
-          if-no-files-found: error # 파일이 없으면 에러를 내서 바로 알 수 있게 함
+    - name: Package Application
+      run: |
+        npm run package
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux-electron-build
+        path: ./dist/*
