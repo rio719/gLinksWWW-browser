@@ -19,7 +19,7 @@ jobs:
           node-version: '18' # 리오님 환경에 맞는 노드 버전
 
       - name: Install dependencies
-        working-directory: ./1.2.5 # 👈 리오님이 만든 그 폴더로 이동!
+        working-directory: ./glinks-browser-1.2.5 # 👈 리오님이 만든 그 폴더로 이동!
         run: npm install
 
       - name: Build Electron App
