@@ -33,3 +33,11 @@ jobs:
         with:
           name: GlinksWWW-Win-Exe
           path: glinks-browser-1.2.5/dist/*.exe # 빌드 결과물이 나오는 경로 (dist 폴더 확인!)
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: GlinksWWW-Windows-Exe  # 👈 다운로드할 때 표시될 이름
+          path: |
+            glinks-browser-1.2.5/dist/*.exe
+            glinks-browser-1.2.5/dist/*.blockmap
+          if-no-files-found: error # 파일이 없으면 에러를 내서 바로 알 수 있게 함
