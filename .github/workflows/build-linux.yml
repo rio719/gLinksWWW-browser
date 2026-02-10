@@ -18,6 +18,8 @@
     - name: Run Linux Build
       run: |
         cd ./glinks-browser-1.2.5
+        npx electron-builder --linux --x64
+        
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
