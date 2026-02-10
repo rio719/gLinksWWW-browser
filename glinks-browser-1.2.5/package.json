@@ -44,14 +44,10 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64", "arm64"]
+          "arch": ["x64"]
         },
         {
           "target": "deb",
-          "arch": ["amd64", "arm64"]
-        },
-        {
-          "target": "tar.gz",
           "arch": ["x64"]
         }
       ],
