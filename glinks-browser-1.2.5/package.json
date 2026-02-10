@@ -46,14 +46,9 @@
     },
     "linux": {
       "target": [
-        {
-          "target": "AppImage",
-          "arch": ["x64"]
-        },
-        {
-          "target": "deb",
-          "arch": ["x64"]
-        }
+         "target": ["AppImage", "deb"],
+  "category": "Network",
+  "executableName": "glinkswww" 
       ],
       "category": "Network",
       "icon": "icon.png"
