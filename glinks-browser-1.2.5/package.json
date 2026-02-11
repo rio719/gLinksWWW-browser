@@ -3,6 +3,7 @@
   "version": "1.2.5",
   "description": "18 Clipboards Privacy Browser",
   "main": "main.js",
+  "author": "Rio Burhan <riobhn19@gmail.com>",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder"
@@ -11,7 +12,7 @@
   "type": "git",
   "url": "https://github.com/rio719/gLinksWWW-browser.git"
 },
-  "author": "Rio Burhan",
+  
   "license": "No commercial use, distribution, or modification allowed without permission.",
   "devDependencies": {
     "electron": "40.0.0",
@@ -45,7 +46,7 @@
       "icon": "icon.ico"
     },
     "linux": {
-     "author": "Rio Burhan <riobhn19@gmail.com>",
+     
          "target": ["AppImage", "deb"],
   "category": "Network",
   "executableName": "glinkswww",
