@@ -1,5 +1,11 @@
+name: GlinksWWW Linux Build
+
+on:
+  push:
+    branches: [ "main" ] 
+  workflow_dispatch:     
   build-linux:
-    runs-on: ubuntu-latest # 리눅스 빌드는 우분투 서버에서!
+    runs-on: ubuntu-latest 
 
     steps:
     - name: Checkout Code
