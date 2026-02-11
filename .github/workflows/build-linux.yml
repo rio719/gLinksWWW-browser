@@ -2,38 +2,38 @@ name: GlinksWWW Linux Build
 
 on:
   push:
-    branches: [ "main" ] 
-  workflow_dispatch: 
+    branches: [ "main" ]
+  workflow_dispatch:      # 수동 실행 버튼
+
 jobs:
   build-linux:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
+      - name: Checkout Code
+        uses: actions/checkout@v4 # v2에서 v4로 업그레이드!
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '18' 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4 # v2에서 v4로 업그레이드!
+        with:
+          node-version: '18'
 
-    - name: Install Dependencies
-      run: |
-        cd ./glinks-browser-1.2.5
-        npm install
+      - name: Install Dependencies
+        run: |
+          cd ./glinks-browser-1.2.5
+          npm install
 
-    - name: Run Linux Build
-      run: |
-        cd ./glinks-browser-1.2.5
-        npx electron-builder --linux --x64
-        
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run Linux Build
+        run: |
+          cd ./glinks-browser-1.2.5
+          npx electron-builder --linux --x64
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload Linux Artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: linux-artifacts
-        path: |
-          glinks-browser-1.2.5/dist/*.deb
-          glinks-browser-1.2.5/dist/*.AppImage
+      - name: Upload Linux Artifacts
+        uses: actions/upload-artifact@v4 # 👈 여기서 에러 났던 걸 v4로 수정!
+        with:
+          name: linux-artifacts
+          path: |
+            glinks-browser-1.2.5/dist/*.deb
+            glinks-browser-1.2.5/dist/*.AppImage
