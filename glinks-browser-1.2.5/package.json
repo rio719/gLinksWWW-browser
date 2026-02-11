@@ -45,7 +45,7 @@
       "icon": "icon.ico"
     },
     "linux": {
-     
+     "author": "Rio Burhan <riobhn19@gmail.com>",
          "target": ["AppImage", "deb"],
   "category": "Network",
   "executableName": "glinkswww",
