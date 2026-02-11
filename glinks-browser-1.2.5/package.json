@@ -45,11 +45,10 @@
       "icon": "icon.ico"
     },
     "linux": {
-      "target": [
+     
          "target": ["AppImage", "deb"],
   "category": "Network",
-  "executableName": "glinkswww" 
-      ],
+  "executableName": "glinkswww",
       "category": "Network",
       "icon": "icon.png"
     }
