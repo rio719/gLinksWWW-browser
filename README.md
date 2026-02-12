@@ -53,4 +53,4 @@ Multi-Tab Navigation: High-speed tab system (supporting up to 7 tabs).
 
 Unique Aesthetic: Tan/Brown Retro UI inspired by early computing history.
 
-Cross-Platform: Available for Windows, Linux (AppImage/DEB)
+Cross-Platform: Available for Windows, Linux (AppImage/DEB), and MacOS
