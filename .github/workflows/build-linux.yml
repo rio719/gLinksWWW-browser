@@ -1,4 +1,4 @@
-name: GlinksWWW Linux Build
+name: GlinksWWW Windows Build
 
 on:
   push:
@@ -6,15 +6,15 @@ on:
   workflow_dispatch:      # 수동 실행 버튼
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-latest
+  build-windows:
+    runs-on: windows-latest
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4 # v2에서 v4로 업그레이드!
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4 # v2에서 v4로 업그레이드!
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
@@ -23,17 +23,19 @@ jobs:
           cd ./glinks-browser-1.2.5
           npm install
 
-      - name: Run Linux Build
+      - name: Run Windows Build
         run: |
           cd ./glinks-browser-1.2.5
-          npx electron-builder --linux --x64
+          npx electron-builder --win --x64
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Linux Artifacts
-        uses: actions/upload-artifact@v4 # 👈 여기서 에러 났던 걸 v4로 수정!
+      - name: Upload Windows Artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: linux-artifacts
+          name: windows-artifacts
           path: |
-            glinks-browser-1.2.5/dist/*.deb
-            glinks-browser-1.2.5/dist/*.AppImage
+            glinks-browser-1.2.5/dist/*.exe
+            glinks-browser-1.2.5/dist/*.msi
+            glinks-browser-1.2.5/dist/*.nsis
+
