@@ -274,8 +274,8 @@ function openExternal(url) {
   // 초기화 (이전 답변 코드에서 오타 수정: supabase.createClient -> supabase.createClient)
 const { createClient } = supabase; 
 // home.html의 스크립트 부분
-const SUPABASE_URL = ""; // Project URL
-const SUPABASE_KEY = ""; // anon key
+const SUPABASE_URL = "https://uplcvngycheslyskgtes.supabase.co"; // Project URL
+const SUPABASE_KEY = "sb_publishable_DapWMI7yV5BQdkhzLmk9YA_rCXk3Atf"; // anon key
 
 
 const _supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -290,9 +290,9 @@ async function loadRecommendations() {
     try {
         console.log("데이터 불러오기 시도 중...");
         const { data, error } = await _supabase
-            .from('webs') // 테이블 이름 'website' 확인됨
+            .from('website') // 테이블 이름 'website' 확인됨
             .select('*')
-            .order('num', { ascending: true }) 
+            .order('number', { ascending: true }) 
             .limit(9);
 
         if (error) throw error;
@@ -359,9 +359,9 @@ async function loadVersion() {
     try {
         console.log("데이터 불러오기 시도 중...");
         const { data, error } = await _supabase
-            .from('lat') // 테이블 이름 'latest' 확인됨
+            .from('latest') // 테이블 이름 'latest' 확인됨
             .select('*')
-            .order('num', { ascending: true }) 
+            .order('number', { ascending: true }) 
             .limit(1);
 
         if (error) throw error;
@@ -464,5 +464,6 @@ window.onload = () => {
 </body>
 
 </html>
+
 
 
