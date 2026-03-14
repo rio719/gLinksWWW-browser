@@ -1,12 +1,15 @@
-
-
+<img src="1.png">
 
 About gLinksWWW Browser 1.2.6
 Developed by: Rio Burhan (riobhn19@gmail.com)
 
 gLinksWWW is a privacy-focused, high-productivity web browser designed for power users who demand speed, control, and absolute privacy.
 
-**1. Innovative Multi-Slot Clipboard (18 slot) and the clipboard manager** 
+
+<strong>1. Innovative Multi-Slot Clipboard (18 slot) and the clipboard manager</strong>
+
+<img src="2.png" >
+
 Break free from the single-item clipboard limit. gLinksWWW features a 9-Slot Multi-Copy & Paste system.
 
 18 Concurrent Slots: Store up to 9 different text snippets or links simultaneously.
@@ -22,6 +25,7 @@ you can also view and manage what you copy/cut in the clipboard manager!
 Note: Make sure to remember your slot numbers! (e.g., if you copy to Slot 2, you must paste from Slot 2).
 
 **2. Instant Search Engine Switcher** 
+
 Experience total freedom of search. Switch between the world’s most powerful search engines with a single click directly from the interface:
 
 AI-Powered: Perplexity
@@ -43,6 +47,9 @@ No History Stored: Navigation history is never saved to the local disk.
 Clean Exit: Once you close the session, all your tracks are instantly gone.
 
 **4. Per-Website Cookie Management** 
+
+<img src="3.png">
+
 Take granular control over your digital identity:
 
 Isolation: Manage, destroy, and edit cookies for specific websites without affecting others.
