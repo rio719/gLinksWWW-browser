@@ -1,20 +1,23 @@
 
-<img width="1366" height="765" alt="Screen Shot 2026-02-09 at 11 39 41" src="https://github.com/user-attachments/assets/becc8951-dc4a-42a3-9022-b374a65b74d8" />
 
-About gLinksWWW Browser 1.2.5
+
+About gLinksWWW Browser 1.2.6
 Developed by: Rio Burhan (riobhn19@gmail.com)
 
 gLinksWWW is a privacy-focused, high-productivity web browser designed for power users who demand speed, control, and absolute privacy.
 
-**1. Innovative Multi-Slot Clipboard (18 slot)** 
+**1. Innovative Multi-Slot Clipboard (18 slot) and the clipboard manager** 
 Break free from the single-item clipboard limit. gLinksWWW features a 9-Slot Multi-Copy & Paste system.
 
 18 Concurrent Slots: Store up to 9 different text snippets or links simultaneously.
 
 Powerful Hotkeys: * Ctrl + Shift + 0 ~ 9,f1 ~ f8 : Copy to the specific slot.
 
+Alt + Shift + 0 ~ 9,f1 ~ f8 : Cut to the specific slot.
+
 Ctrl + Alt + 0 ~ 9,f1 ~ f8 : Paste from the specific slot.
 
+you can also view and manage what you copy/cut in the clipboard manager!
 
 Note: Make sure to remember your slot numbers! (e.g., if you copy to Slot 2, you must paste from Slot 2).
 
