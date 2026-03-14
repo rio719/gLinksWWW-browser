@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gLinksWWW Account Manager</title>
+    <style>
+         /* 클래식 윈도우 스타일 */
+     body {
+            background-color: #c0c0c0; /* 클래식 윈도우 회색 */
+            font-family: 'Tahoma', 'Arial', sans-serif;
+            font-size: 12px;
+            padding: 20px;
+        }
+        h2 {
+            color: #000080;
+            border-bottom: 2px solid #808080;
+            padding-bottom: 5px;
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: white;
+            box-shadow: inset 2px 2px #808080, inset -2px -2px #ffffff;
+        }
+        th {
+            background-color: #d4d0c8;
+            border: 1px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            padding: 6px;
+            text-shadow: 1px 1px white;
+        }
+        td {
+            padding: 6px;
+            border: 1px solid #eeeeee;
+        }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        
+        /* 클래식 버튼 스타일 */
+        button {
+            padding: 4px 12px;
+            background-color: #d4d0c8;
+            border: 2px outset #ffffff;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 1px 1px 0px black;
+        }
+        button:active {
+            border: 2px inset #ffffff;
+            box-shadow: none;
+        }
+        button.delete-btn {
+            color: #a00000;
+        }
+         button.nuclear-btn {
+            color: #c4b702;
+        }
+        .vault-container {
+            border: 2px inset #ffffff;
+            padding: 10px;
+            background: #e0e0e0;
+        }
+        </style>
+</head>
+<body>
+    
+        <h2>gLinksWWW Account Manager</h2>
+    <div class="vault-container">
+        <button onclick="addAccount('google')" style="color:blue">+ Add Google</button>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th><strong>Account</strong></th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="TableBody">
+                </tbody>
+        </table>
+    </div>
+    <script>
+    const { ipcRenderer } = require('electron');
+
+ // account.html의 <script> 태그 안에 추가
+ipcRenderer.on('accounts-updated', () => {
+    console.log("계정 목록 갱신 신호 수신");
+    refreshList(); // 이 함수가 실행되어야 테이블이 다시 그려집니다.
+});
+
+// 추가로 테이블 바디를 그리는 함수에서 에러 방지
+async function refreshList() {
+    const accounts = await ipcRenderer.invoke('get-accounts');
+    const container = document.getElementById('TableBody');
+    if (!container) return; // 에러 방지
+    
+    // 이 부분에 숫자를 표시하는 엘리먼트가 없다면 에러가 나니 조건문 추가
+    const countEl = document.getElementById('count');
+    if (countEl) countEl.innerText = accounts.length;
+
+    container.innerHTML = accounts.map((acc, i) => `
+        <tr>
+            <td><strong>[${acc.provider}]</strong> ${acc.email}</td>
+            <td><button onclick="delAcc(${i})" class="delete-btn">Delete</button><button onclick="loginWithAccount(${i})">Login</button></td>
+        </tr>
+    `).join('');
+}
+
+    async function delAcc(index) {
+        if(confirm("are you sure to delete this account?")) {
+            await ipcRenderer.invoke('delete-account', index);
+            refreshList();
+        }
+    }
+    async function addAccount(provider) {
+            const accounts = await ipcRenderer.invoke('get-accounts');
+            if (accounts.length >= 10) {
+                alert("maximum 10 accounts allowed.");
+                return;
+            }
+            // 실제 인증 로직 (여기서는 예시 데이터를 저장하지만, 나중에는 Supabase 인증 결과값을 보냅니다)
+            ipcRenderer.send('start-oauth', provider);
+        }
+async function loginWithAccount(index) {
+    const result = await ipcRenderer.invoke('login-with-account', index);
+    if (result) {
+        // 🔥 모든 구글 서비스 테스트!
+        const sites = [
+            'https://mail.google.com',
+            'https://youtube.com', 
+            'https://myaccount.google.com',
+            'https://drive.google.com',
+            'https://photos.google.com'
+        ];
+        
+        sites.forEach(site => {
+            setTimeout(() => window.open(site, '_blank'), Math.random() * 500);
+        });
+        
+        alert(`Logged in successfully! ${successCount}/${account.cookies.length} cookies restored. opening google services...`);
+    }
+}
+
+    refreshList();
+
+</script>
+</body>
+</html>

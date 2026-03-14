@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gLinks demo</title>
+    <style>
+        #recommend-list {
+            text-align: center;
+        }
+      h3 {
+        font-family: 'Times New Roman', Times, serif;
+      }
+      .tab-container {
+    
+    margin-bottom: 10px;
+}
+      .tab-content {
+        margin:0 auto;
+    padding: 15px;
+    background: #ece9d8;
+    border: 2px inset #eee;
+    min-height: 200px;
+    max-width:500px;
+}
+         .toolbar { 
+      height: 50px; display: flex; align-items: center; padding: 0 10px; gap: 10px; background: #b89f79;
+      border-top: 2px solid #ffffff; border-left: 2px solid #fff;
+      border-right: 2px solid #292929; border-bottom: 2px solid  #292929;
+    /* 가운데 정렬을 위한 핵심 코드 */
+  margin: 0 auto;  /* 좌우 여백을 자동으로 잡아 가운데로 보냄 */
+  width: 900px;    /* 고정 너비 유지 */
+}
+
+/* 아래 텍스트(a 태그)도 가운데로 오게 하려면 */
+p[align="center"] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+    input { 
+        outline: none; /* 주황색 테두리 제거 */
+      flex: 1; padding: 13px; background: white;
+      border-right: 2px solid #292929; border-bottom: 2px solid  #292929;
+      border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    }
+    button { 
+      padding: 9px 15px; background: #b89f79; font-weight: bold;
+      border-top: 2px solid #fff; border-left: 2px solid #fff;
+      border-right: 2px solid #292929; border-bottom: 2px solid  #292929;
+      cursor: pointer;
+    }
+    button:active {
+      border-right: 2px solid #292929; border-bottom: 2px solid  #292929;
+      border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    }
+      button.tab {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 12px;
+        background: #b89f79; /* 기본 갈색 */
+        border: 2px outset #eee; /* 입체 효과 */
+        cursor: pointer;
+        margin-right: 2px;
+        font-family: 'Times New Roman', serif;
+        font-size: 13px;
+        color: white;
+    }
+
+    /* 마우스를 올렸을 때 */
+    button.tab:hover { background: #a68d66;
+    color: white; }
+
+    /* 선택된 탭 (더 어두운 갈색 + 눌린 효과) */
+    button.tab.active {
+        background: #8e7956; 
+      
+        color: white;
+    }
+    /* 각 행 (3개씩 배치) */
+    .feed-row {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+    /* 클래식한 파란색 밑줄 링크 스타일 */
+    .feed-link {
+        color: #0000FF;
+        text-decoration: underline;
+        font-family: 'Tahoma', sans-serif;
+        font-size: 14px;
+        cursor: pointer;
+    }
+    .feed-link:hover {
+        color: #FF0000; /* 마우스 올리면 빨간색으로 변하는 고전 감성 */
+    }
+    .feed-detail {
+      
+        
+        font-family: 'Tahoma', sans-serif;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    /* home.html 또는 style.css */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    overflow-y: auto; /* 전체 페이지 스크롤은 막고 */
+}
+
+/* 텔레그램이나 웹사이트가 들어가는 컨테이너 */
+#content-area {
+    width: 100%;
+    height: calc(100vh - 50px); /* 탭 바 높이가 50px이라면 그만큼 빼고 나머지 꽉 채우기 */
+    display: block;
+}
+
+webview, iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body style="text-align: center;">
+    <div id="customAlert" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999999; align-items: center; justify-content: center;">
+        <div style="background: #b89f79; border: 3px outset #fff; box-shadow: 10px 10px 0px #000; padding: 20px; width: 300px; text-align: center;">
+          <div style="background: #292929; color: white; padding: 5px; margin: -20px -20px 20px -20px; font-weight: bold; font-size: 14px;">
+            gLinksWWW Message
+          </div>
+          <p id="alertMessage" style="color: #fff; font-weight: bold; margin-bottom: 20px; word-break: break-all;">메시지 내용</p>
+          <button id="alertOkBtn" style="background: #b89f79; border: 2px outset #fff; padding: 5px 20px; color: white; font-weight: bold; cursor: pointer;">OK</button>
+        </div>
+      </div>
+      <div id="customPrompt" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center;">
+        <div style="background: #b89f79; border: 3px outset #fff; box-shadow: 10px 10px 0px #000; padding: 20px; width: 350px; text-align: center;">
+          <div style="background: #292929; color: white; padding: 5px; margin: -20px -20px 15px -20px; font-weight: bold; font-size: 14px; text-align: left; padding-left: 10px;">
+            gLinksWWW Input
+          </div>
+          <p id="promptMessage" style="color: #fff; font-weight: bold; margin-bottom: 15px; text-align: left;">질문 내용이 들어갑니다.</p>
+          <input type="text" id="promptInput" style="width: 100%; padding: 5px; margin-bottom: 20px; border: 2px inset #fff; background: #eee; font-family: 'Courier New', monospace; outline: none;">
+          <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button id="promptOkBtn" style="background: #b89f79; border: 2px outset #fff; padding: 3px 15px; color: white; font-weight: bold; cursor: pointer;">OK</button>
+            <button id="promptCancelBtn" style="background: #b89f79; border: 2px outset #fff; padding: 3px 15px; color: white; font-weight: bold; cursor: pointer;">Cancel</button>
+          </div>
+        </div>
+      </div>
+    <p align="center">
+    <img src="glinks1.png" alt="gLinks Logo" style="width:auto;height:300px;"><br>
+    <div class="toolbar">
+    <select id="engineSelect" style="background: #b89f79; border: 2px outset #fff; padding: 5px;">
+        <option value="perplexity">Perplexity AI</option>
+        <option value="google">Google</option>
+        <option value="bing">Bing</option>
+        <option value="yahoo">Yahoo</option>
+        
+        <option value="brave">Brave</option>
+        <option value="startpage">Startpage</option>
+        <option value="yandex">Yandex</option>
+        
+    </select>
+    <input type="text" id="searchInput" placeholder="Search on here..." style="width: 300px; padding: 5px;">
+      
+      <button onclick="performSearch()">🔍</button></div>
+    <br><b style="margin: 0 auto;  ">Welcome to graphical Links World Wide Web Browser!</b>
+    <br><a style="margin: 0 auto;  ">Copyright © Rio Burhan (riobhn19@gmail.com) 2026, All Rights Reserved</a><br><br>
+    <div class="tab-container">
+    <button class="tab active" onclick="openTab(event, 'for-you')">For you</button>
+    <button class="tab" onclick="openTab(event, 'how-to-use')">How to use</button>
+    <button class="tab" onclick="openTab(event, 'help')">Help & Latest Version</button>
+</div>
+
+<div id="for-you" class="tab-content" style="display: block;">
+    <p>Are you like my browser?<br> <a href="#" onclick="openExternal('https://buymeacoffee.com/glinkswww')">Support my browser in here!</a></p>
+    <h3>Recommended Sites</h3>
+    <div id="recommend-list">
+        <p>Loading recommendations...</p>
+    </div>
+</div>
+
+<div id="how-to-use" class="tab-content" style="display: none;">
+    <h3>How to use gLinksWWW 🇺🇸</h3>
+    <ul> 
+        <li><b>Multi-Copy&Cut&Paste(18 slot multi clipboard):</b> Ctrl+Shift+ 0 ~ 9/f1 ~ f8 (total 18 slots) for copy,Alt + Shift + 0 ~ 9/f1 ~ f8 (total 18 slots) for cut, Ctrl+Alt+ 0 ~ 9/f1 ~ f8 (total 18 slot) for paste. (Example: Ctrl+Shift+1 to copy, Ctrl+Alt+1 to paste || Alt+Shift+f2 to cut, Ctrl+Alt+f2 to paste)</li>
+        <li><b>Cookie Vault:</b> Click the cookie icon to destroy cookies.</li>
+        <li><b>manage clipboard:</b> click the paper icon to view your clipboard contents and manage them.</li>
+        <li><b>Search:</b> choose the search engine, type anything in the search bar and click the 🔍 button.</li>
+        <li><b>Travelling the Web:</b> Type any link in the top bar and click the 'Go!'button</li>
+        <li><b>Tabs:</b> Click the + button to open a new tab.</li>
+        <li><b>Home Button:</b> Click the Home button to return to the home page.</li>
+        <li><b>Navigation:</b> Use the back and forward buttons to navigate through your browsing history.</li>
+        <li><b>Reload:</b> Click the reload button to refresh the current page.</li>
+        <li><b>Watch youtube video/shorts:</b> Click a youtube video/shorts and click the reload button</li>
+    </ul>
+    <h3>지링스www 사용법 🇰🇷</h3>
+    <ul>
+        <li><b>다중 복붙 & 자르기  (18슬롯 다중클립보드):</b> Ctrl+Shift+ 0 ~ 9/f1 ~ f8 로 복사하고, Alt + Shift + 0 ~ 9/f1 ~ f8 로 자르기, Ctrl+Alt+ 0 ~ 9/f1 ~ f8 로 붙여놓기. (Example: Ctrl+Shift+1로 복사한 뒤, Ctrl+Alt+1로 붙여놓기 || Alt+Shift+f2로 자른 뒤, Ctrl+Alt+f2로 붙여놓기)</li>
+        <li><b>쿠키 관리:</b> 쿠키 버튼을 눌러 웹사이트별로 쿠키를 관리해보세요!</li>
+        <li><b>클립보드 관리:</b> 종이 아이콘을 클릭하여 클립보드 내용을 확인하고 관리할 수 있습니다.</li>
+        <li><b>검색:</b> 검색 엔진을 선택하고, 검색창에 내용을 입력한 뒤 🔍 버튼을 클릭하세요.</li>
+        <li><b>웹 탐험:</b> 주소창에 주소를 입력한뒤, 'Go!' 버튼을 클릭하세요.</li>
+        <li><b>탭:</b> + 버튼을 눌러 새 탭을 열 수 있습니다.</li>
+        <li><b>홈버튼:</b> 홈 버튼을 눌러 홈 화면으로 돌아갈 수 있습니다.</li>
+        <li><b>탐색(뒤로가기&앞으로가기):</b> 뒤로가기 및 앞으로가기 버튼을 사용하여 이전 방문 페이지로 돌아갈 수 있습니다.</li>
+        <li><b>새로고침:</b> 새로고침 버튼을 눌러 현재 페이지를 새로 고칠 수 있습니다.</li>
+        <li><b>유튜브 영상/쇼츠 시청:</b> 유튜브 영상/쇼츠를 클릭한 뒤 새로고침 버튼을 클릭하세요.</li>
+    </ul>
+    <h3>cara memakai gLinksWWW 🇮🇩</h3>
+    <ul>
+        <li><b>Multi copy/cut dan paste (18 slot multi clipboard):</b> Ctrl+Shift+ 0 ~ 9/f1 ~ f8 untuk copy, Alt + Shift + 0 ~ 9/f1 ~ f8 untuk cut, Ctrl+Alt+ 0 ~ 9/f1 ~ f8 untuk paste. (Contoh: Copy dengan Ctrl+Shift+1, Paste dengan Ctrl+Alt+1 || Cut dengan Alt+Shift+f2, Paste dengan Ctrl+Alt+f2)</li>
+        <li><b>Mengatur cookie:</b> Anda bisa mengatur cookie per website dengan mengeklik tombol cookie.</li>
+        <li><b>Mengelola clipboard:</b> Klik ikon kertas untuk melihat isi clipboard Anda dan mengelolanya.</li>
+        <li><b>Search:</b> Pilih mesin pencari, masukkan teks di kolom pencarian, lalu klik tombol 🔍.</li>
+        <li><b>Web browsing:</b> Masukkan alamat di kolom alamat dan klik tombol 'Go!'.</li>
+        <li><b>Tab:</b> Klik tombol + untuk membuka tab baru.</li>
+        <li><b>Home button:</b> Klik tombol Home untuk kembali ke halaman utama.</li>
+        <li><b>Navigasi (back & forward):</b> Gunakan tombol back dan forward untuk kembali ke halaman sebelumnya.</li>
+        <li><b>Reload:</b> Klik tombol reload untuk memuat ulang halaman saat ini.</li>
+        <li><b>Nonton youtube video/shorts:</b> Klik youtube video/shorts yang anda ingin menonton. Setelah itu, klik tombol reload.</li>
+    </ul>
+</div>
+
+<div id="help" class="tab-content" style="display: none;">
+    <h3>Support</h3>
+    <p>Contact us for assistance or feedback.</p>
+    <a>help/contact: riobhn19@gmail.com</a>
+     <h3>Latest Version</h3>
+    <div id="latest-version">
+        <p>Loading...</p>
+    </div>
+</div>
+</p>
+<script>
+const { ipcRenderer } = require('electron');
+    function performSearch() {
+        const query = document.getElementById('searchInput').value;
+        const engine = document.getElementById('engineSelect').value;
+        
+        // 검색어와 선택한 엔진 정보를 함께 보냄
+        ipcRenderer.send('load-url', { url: query, engine: engine });
+    }
+    function openTab(evt, tabName) {
+        
+    // 1. 모든 컨텐츠 숨기기
+    const contents = document.getElementsByClassName("tab-content");
+    for (let i = 0; i < contents.length; i++) {
+        contents[i].style.display = "none";
+    }
+
+    // 2. 모든 버튼에서 'active' 클래스 제거
+    const tabs = document.getElementsByClassName("tab");
+    for (let i = 0; i < tabs.length; i++) {
+        tabs[i].className = tabs[i].className.replace(" active", "");
+    }
+
+    // 3. 선택된 탭 보여주기 및 버튼 활성화
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+    // [중요] For you 탭을 눌렀을 때만 함수 실행!
+    if (tabName === 'for-you') {
+        loadRecommendations();
+    }
+}
+
+// 외부 링크 열기 (Electron 브라우저 뷰 내에서 이동)
+function openExternal(url) {
+    location.href = url;
+}
+
+</script>
+<script>
+  // 초기화 (이전 답변 코드에서 오타 수정: supabase.createClient -> supabase.createClient)
+const { createClient } = supabase; 
+// home.html의 스크립트 부분
+const SUPABASE_URL = "https://uplcvngycheslyskgtes.supabase.co"; // Project URL
+const SUPABASE_KEY = "sb_publishable_DapWMI7yV5BQdkhzLmk9YA_rCXk3Atf"; // anon key
+
+
+const _supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+async function loadRecommendations() {
+    // 1. HTML에 이 ID를 가진 태그가 있는지 꼭 확인하세요!
+    const grid = document.getElementById('recommend-list'); 
+    if (!grid) {
+        console.error("ID가 'recommend-list'인 태그를 찾을 수 없습니다.");
+        return;
+    }
+    
+    try {
+        console.log("데이터 불러오기 시도 중...");
+        const { data, error } = await _supabase
+            .from('website') // 테이블 이름 'website' 확인됨
+            .select('*')
+            .order('number', { ascending: true }) 
+            .limit(9);
+
+        if (error) throw error;
+
+        console.log("성공! 데이터:", data); // 성공하면 콘솔(F12)에 데이터가 찍힙니다.
+
+        grid.innerHTML = ''; 
+
+        const topRow = document.createElement('div');
+        topRow.className = 'feed-row';
+        topRow.style.display = 'flex'; // 확실하게 가로 배치
+        topRow.style.justifyContent = 'space-around';
+        
+        const bottomRow = document.createElement('div');
+        bottomRow.className = 'feed-row';
+        bottomRow.style.display = 'flex';
+        bottomRow.style.justifyContent = 'space-around';
+        bottomRow.style.marginTop = '15px';
+        bottomRow.style.marginBottom = '3px';
+
+const bottomRow1 = document.createElement('div');
+        bottomRow1.className = 'feed-row';
+        bottomRow1.style.display = 'flex';
+        bottomRow1.style.justifyContent = 'space-around';
+        bottomRow1.style.marginTop = '15px';
+        data.forEach((site, index) => {
+            const link = document.createElement('span');
+            link.className = 'feed-link';
+            link.style.color = 'blue';
+            link.style.textDecoration = 'underline';
+            link.style.cursor = 'pointer';
+            link.innerText = site.name;
+            
+            link.onclick = () => { 
+                if(site.domain) location.href = site.domain; 
+            };
+
+            if (index < 3) {
+                topRow.appendChild(link);
+            } else if (index < 6) {
+                bottomRow.appendChild(link);
+            } else {
+                bottomRow1.appendChild(link);
+            }
+        });
+
+        grid.appendChild(topRow);
+        grid.appendChild(bottomRow);
+        grid.appendChild(bottomRow1);
+
+    } catch (e) {
+        grid.innerHTML = '<p style="color:red;">Failed to load links: ' + e.message + '</p>';
+        console.error("상세 에러:", e);
+    }
+}
+async function loadVersion() {
+    // 1. HTML에 이 ID를 가진 태그가 있는지 꼭 확인하세요!
+    const grid = document.getElementById('latest-version'); 
+    if (!grid) {
+        console.error("ID가 'latest-version'인 태그를 찾을 수 없습니다.");
+        return;
+    }
+    
+    try {
+        console.log("데이터 불러오기 시도 중...");
+        const { data, error } = await _supabase
+            .from('latest') // 테이블 이름 'latest' 확인됨
+            .select('*')
+            .order('number', { ascending: true }) 
+            .limit(1);
+
+        if (error) throw error;
+
+        console.log("성공! 데이터:", data); // 성공하면 콘솔(F12)에 데이터가 찍힙니다.
+
+        grid.innerHTML = ''; 
+
+        const topRow = document.createElement('div');
+        topRow.className = 'feed-row';
+        topRow.style.display = 'flex'; // 확실하게 가로 배치
+        topRow.style.justifyContent = 'space-around';
+        
+        const bottomRow = document.createElement('div');
+        bottomRow.className = 'feed-row';
+        bottomRow.style.display = 'flex';
+        bottomRow.style.justifyContent = 'space-around';
+        bottomRow.style.marginTop = '15px';
+        bottomRow.style.marginBottom = '3px';
+
+
+        data.forEach((site, index) => {
+            const link = document.createElement('span');
+            link.className = 'feed-link';
+            link.style.color = 'blue';
+            link.style.textDecoration = 'underline';
+            link.style.cursor = 'pointer';
+            link.innerText = site.version;
+            const details = document.createElement('span');
+            details.innerText = site.detail;
+            details.style.color = 'gray';
+            details.className = 'feed-detail';
+            link.onclick = () => { 
+                if(site.link) location.href = site.link; 
+            };
+
+            
+                topRow.appendChild(link);
+            
+                bottomRow.appendChild(details);
+
+        });
+
+        grid.appendChild(topRow);
+        grid.appendChild(bottomRow);
+       
+
+    } catch (e) {
+        grid.innerHTML = '<p style="color:red;">Failed to load links: ' + e.message + '</p>';
+        console.error("상세 에러:", e);
+    }
+}
+window.onload = () => {
+    loadRecommendations(); // 켜지자마자 실행
+    // 혹시 다른 초기화 함수가 있다면 여기에 추가
+    loadVersion();
+};
+ // [메인 프로세스에서 온 신호 처리]
+ 
+ const customAlert = document.getElementById('customAlert');
+  const alertMsg = document.getElementById('alertMessage');
+  
+  // 메인 프로세스에서 'show-alert' 신호를 받으면 실행
+  ipcRenderer.on('show-alert', (event, message) => {
+    alertMsg.innerText = message;
+    customAlert.style.display = 'flex';
+  });
+
+  document.getElementById('alertOkBtn').onclick = () => {
+    customAlert.style.display = 'none';
+  };
+  const customPrompt = document.getElementById('customPrompt');
+  const promptMsg = document.getElementById('promptMessage');
+  const promptInput = document.getElementById('promptInput');
+
+  // 웹사이트에서 prompt 요청이 왔을 때
+  ipcRenderer.on('show-prompt', (event, message, defaultValue) => {
+    promptMsg.innerText = message;
+    promptInput.value = defaultValue || "";
+    customPrompt.style.display = 'flex';
+    promptInput.focus();
+  });
+
+  // OK 버튼 클릭 시 입력값 전송
+  document.getElementById('promptOkBtn').onclick = () => {
+    ipcRenderer.send('prompt-response', promptInput.value);
+    customPrompt.style.display = 'none';
+  };
+
+  // Cancel 버튼 클릭 시 null 전송
+  document.getElementById('promptCancelBtn').onclick = () => {
+    ipcRenderer.send('prompt-response', null);
+    customPrompt.style.display = 'none';
+  };
+  ipcRenderer.on('max8tab', () => { 
+    document.getElementById('alertMessage').innerText = "Max 8 tabs allowed";
+    document.getElementById('customAlert').style.display = 'flex';
+  });
+</script>
+</body>
+
+</html>
+
+
+

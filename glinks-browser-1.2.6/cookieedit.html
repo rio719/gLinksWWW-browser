@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Cookie Value</title>
+    <style>
+        body { background: #000; color: #fff; font-family: monospace; padding: 20px; }
+        textarea { background: #222; color: #0f0; border: 1px solid #444; width: 100%; padding: 10px; margin-bottom: 10px; }
+        button { background: #444; color: #fff; border: none; padding: 10px 20px; cursor: pointer; }
+        button:hover { background: #666; }
+        #cookieNameDisplay { font-size: 0.9em; color: #aaa; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div id="cookieNameDisplay">Loading info...</div>
+
+    <textarea id="cookievalue" rows="15"></textarea>
+    <br>
+    <button onclick="saveCookie()">Save</button>
+    <button onclick="history.back()">Cancel</button>
+
+    <script>
+        // 1. 일렉트론의 ipcRenderer를 직접 불러옵니다.
+    const { ipcRenderer } = require('electron');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const domain = urlParams.get('domain');
+    const name = urlParams.get('name');
+
+        // 상단 정보 표시
+        if (domain && name) {
+            document.getElementById('cookieNameDisplay').innerText = `Editing: ${name} \nDomain: ${domain}`;
+        }
+
+     async function loadCookieValue() {
+        const textArea = document.getElementById('cookievalue');
+        try {
+            // 2. window.electronAPI 대신 ipcRenderer.invoke를 직접 호출!
+            const value = await ipcRenderer.invoke('get-cookie-value', { domain, name });
+            textArea.value = value || "";
+        } catch (error) {
+            console.error('Load error:', error);
+            textArea.value = "Error: " + error.message; 
+        }
+    }
+
+    async function saveCookie() {
+        const newValue = document.getElementById('cookievalue').value;
+        try {
+            // 3. 마찬가지로 직접 호출!
+            const success = await ipcRenderer.invoke('save-cookie', {
+                domain: domain,
+                name: name,
+                value: newValue
+            });
+
+            if (success) {
+                alert('Cookie saved successfully! 😎');
+                window.location.href = 'cookie.html'; 
+            } else {
+                alert('Failed to save cookie. 😢');
+            }
+        } catch (error) {
+            console.error('Save error:', error);
+            alert('An error occurred while saving.');
+        }
+    }
+
+    loadCookieValue();
+    </script>
+</body>
+</html>

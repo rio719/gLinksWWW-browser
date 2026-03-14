@@ -1,0 +1,2 @@
+For non-Debian users: Download the .AppImage, right-click -> 
+Properties -> Permissions -> 'Allow executing file as program', and double-click to run!
