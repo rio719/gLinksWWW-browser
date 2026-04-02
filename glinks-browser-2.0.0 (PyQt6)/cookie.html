@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>gLinks Cookie Manager</title>
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <style>
+        body {
+            background-color: #c0c0c0; /* 클래식 윈도우 회색 */
+            font-family: 'Tahoma', 'Arial', sans-serif;
+            font-size: 12px;
+            padding: 20px;
+        }
+        h2 {
+            color: #000080;
+            border-bottom: 2px solid #808080;
+            padding-bottom: 5px;
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: white;
+            box-shadow: inset 2px 2px #808080, inset -2px -2px #ffffff;
+        }
+        th {
+            background-color: #d4d0c8;
+            border: 1px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            padding: 6px;
+            text-shadow: 1px 1px white;
+        }
+        td {
+            padding: 6px;
+            border: 1px solid #eeeeee;
+        }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        
+        /* 클래식 버튼 스타일 */
+        button {
+            padding: 4px 12px;
+            background-color: #d4d0c8;
+            border: 2px outset #ffffff;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 1px 1px 0px black;
+        }
+        button:active {
+            border: 2px inset #ffffff;
+            box-shadow: none;
+        }
+        button.delete-btn {
+            color: #a00000;
+        }
+         button.nuclear-btn {
+            color: #c4b702;
+        }
+        .vault-container {
+            border: 2px inset #ffffff;
+            padding: 10px;
+            background: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <h2>🍪 gLinksWWW Cookie Manager</h2>
+    <div class="vault-container">
+        <button class="nuclear-btn" onclick="nuclearClear()">NUCLEAR BUTTON</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Domain</th>
+                    <th>Cookies Count</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="cookieTableBody">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+let pyBridge = null;
+
+function setupBridge() {
+    if (typeof QWebChannel === 'undefined' || typeof qt === 'undefined') {
+        console.error('QWebChannel not available.');
+        return;
+    }
+    new QWebChannel(qt.webChannelTransport, function(channel) {
+        pyBridge = channel.objects.py_bridge;
+        loadCookies();
+    });
+}
+
+function loadCookies() {
+    if (!pyBridge) return;
+    pyBridge.get_cookies((result) => {
+    const payload = JSON.parse(result || '{"cookies":[],"currentHost":""}');
+    const cookies = payload.cookies || [];
+    const currentHost = payload.currentHost || "";
+    
+    const tableBody = document.getElementById('cookieTableBody');
+    tableBody.innerHTML = ''; 
+
+    // 현재 사이트의 메인 도메인 추출 (예: www.google.com -> google.com)
+    const getBaseDomain = (host) => {
+        if (!host || host === 'about:blank') return "";
+        const parts = host.split('.');
+        return parts.length > 2 ? parts.slice(-2).join('.') : host;
+    };
+    const currentBase = getBaseDomain(currentHost);
+
+    const domainCount = {};
+    cookies.forEach(c => {
+        domainCount[c.domain] = (domainCount[c.domain] || 0) + 1;
+    });
+
+    for (const domain in domainCount) {
+        const row = document.createElement('tr');
+        const cleanDomain = domain.startsWith('.') ? domain.substring(1) : domain;
+        const cookieBase = getBaseDomain(cleanDomain);
+
+        // 아군(현재 사이트)인지 적군(트래커/옛날 쿠키)인지 판별
+        const isTarget = (currentBase !== "" && currentBase === cookieBase);
+
+        row.innerHTML = `
+            <td>
+               
+                <strong>${domain}</strong>
+            </td>
+            <td style="color: blue;">${domainCount[domain]} items</td>
+            <td>
+                <button class="delete-btn" onclick="deleteCookies('${domain}')">DESTROY</button>
+                <button class="delete-btn" style="color:black;" onclick="editCookies('${domain}')">EDIT</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    }
+    });
+}
+function deleteCookies(domain) {
+    if (!pyBridge) return;
+    pyBridge.delete_cookies(domain, () => {
+        loadCookies();
+    });
+}
+function nuclearClear() {
+            if(confirm("Are you sure you want to delete ALL cookies? This action cannot be undone.")) {
+                if (!pyBridge) return;
+                pyBridge.clear_all_cookies(() => {
+                    loadCookies();
+                });
+            } 
+        }
+// cookie.html의 JS
+function editCookies(domain) {
+    // 예: domain이 'perplexity.ai'라면
+    window.location.href = `cookie1.html?domain=${encodeURIComponent(domain)}`;
+}
+        window.onload = setupBridge;
+    </script>
+</body>
+</html>
