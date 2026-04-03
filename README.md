@@ -1,9 +1,11 @@
-<img src="1.png">
 
-About gLinksWWW Browser 1.2.6
+<img width="1274" height="828" alt="Cuplikan layar 2026-04-03 195535" src="https://github.com/user-attachments/assets/234617f2-d862-4961-be12-97973e23d8ab" />
+
+About gLinksWWW Browser 2.0.0 (PyQt6 Webengine)
 Developed by: Rio Burhan (riobhn19@gmail.com)
 
 gLinksWWW is a privacy-focused, high-productivity web browser designed for power users who demand speed, control, and absolute privacy.
+
 
 
 <strong>1. Innovative Multi-Slot Clipboard (18 slot) and the clipboard manager</strong>
