@@ -8,6 +8,11 @@ gLinksWWW is a privacy-focused, high-productivity web browser designed for power
 
 
 
+
+
+
+## **All About gLinksWWW**
+
 <strong>1. Innovative Multi-Slot Clipboard (18 slot) and the clipboard manager</strong>
 
 <img src="2.png" >
@@ -66,3 +71,15 @@ Multi-Tab Navigation: High-speed tab system (supporting up to 7 tabs).
 Unique Aesthetic: Tan/Brown Retro UI inspired by early computing history.
 
 Cross-Platform: Available for Windows, Linux (AppImage/DEB), and MacOS
+
+ **6. Performance: Light on Resources**
+ 
+ Don't let the feature-rich interface fool you. gLinksWWW is engineered for efficiency. In a side-by-side comparison with Chrome:
+
+- **gLinksWWW:** 355MB (Single tab on naver.com)
+- **Google Chrome:** 421MB (Single tab on naver.com)
+
+> **Note:** Efficiency may vary depending on the system environment and extensions installed on Chrome.
+
+<img width="1429" height="944" alt="Cuplikan layar 2026-04-03 195442" src="https://github.com/user-attachments/assets/8efc6bc3-fe99-429e-9953-17843896cab8" />
+
